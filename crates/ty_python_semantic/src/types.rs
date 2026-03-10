@@ -5432,8 +5432,10 @@ impl<'db> Type<'db> {
                 },
             },
 
-            Type::ClassLiteral(_) => match type_mapping {
-                TypeMapping::Promote(PromotionMode::On) => KnownClass::Type.to_instance(db),
+            Type::ClassLiteral(class) => match type_mapping {
+                TypeMapping::Promote(PromotionMode::On) => {
+                    SubclassOfType::from(db, ClassType::NonGeneric(class))
+                }
                 // A non-generic class never needs to be specialized. A generic class is specialized
                 // explicitly (via a subscript expression) or implicitly (via a call), and not because
                 // some other generic context's specialization is applied to it.
